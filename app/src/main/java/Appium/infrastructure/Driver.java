@@ -2,54 +2,37 @@ package Appium.infrastructure;
 
 import org.openqa.selenium.remote.DesiredCapabilities;
 
-import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.concurrent.TimeUnit;
 
 import io.appium.java_client.android.AndroidDriver;
-import io.appium.java_client.remote.MobileCapabilityType;
-import io.appium.java_client.remote.MobilePlatform;
 
 public class Driver {
-
+	public static final String LOCAL_URL = "http://127.0.0.1:4723/wd/hub";
 	public static AndroidDriver Instance;
+	private static String username=Constants.USERNAME;
+	private static String accessKey=Constants.ACCESS_KEY;
+	public static final String URL = "https://" + username + ":"
+			+ accessKey + "@ondemand.saucelabs.com:443/wd/hub";
 
 	public static void initialize() throws MalformedURLException {
+		DesiredCapabilities capabilities = new DesiredCapabilities();
+		capabilities.setCapability("name", "WeTest Demo");
+		capabilities.setCapability("platformName", "Android");
+		capabilities.setCapability("deviceName", "Samsung Galaxy S4 Emulator");
+		capabilities.setCapability("platformVersion", "4.4");
+		capabilities.setCapability("browserName", "");
+		capabilities.setCapability("deviceOrientation", "portrait");
+		capabilities.setCapability("appiumVersion", "1.5.3");
+		//app to test
+		capabilities.setCapability("app", "sauce-storage:testApp.apk");
 
-		// setting desired capabilities
-		DesiredCapabilities cap = new DesiredCapabilities();
-		cap.setCapability(MobileCapabilityType.PLATFORM_NAME,
-				MobilePlatform.ANDROID);
+		Instance = new AndroidDriver(new URL(URL),capabilities);
+		Instance.currentActivity();
 
-		//cap.setCapability(MobileCapabilityType.DEVICE_NAME, "Android Emulator");
-		cap.setCapability(MobileCapabilityType.DEVICE_NAME, "Android Device");
-
-
-//1. with apk
-		File appDir = new File("C:/testprojects/appium/app");
-		File app = new File(appDir, "testApp.apk");
-		cap.setCapability("app", app.getAbsolutePath());
-
-
-		//2. with app installed and activity known
-		//cap.setCapability(MobileCapabilityType.APP_PACKAGE,"com.meetup");
-
-		//cap.setCapability(MobileCapabilityType.APP_ACTIVITY, "MainActivity");
-
-
-		cap.setCapability(MobileCapabilityType.NEW_COMMAND_TIMEOUT, "500");
-
-		// Android Driver
-
-		Instance = new AndroidDriver(new URL("http://127.0.0.1:4723/wd/hub"),cap);
-Instance.currentActivity();
 		// Wait for element to load
-		Instance.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
-
-		// please remove this code to test
-		// Instance.quit();
-
+		Instance.manage().timeouts().implicitlyWait(60, TimeUnit.SECONDS);
 	}
 
 }
